@@ -1,0 +1,44 @@
+{
+  "name": "idcontrol-api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
+    "cookie-parser": "~1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-promise-router": "^3.0.3",
+    "express-session": "^1.15.6",
+    "helmet": "^3.15.0",
+    "joi": "^14.3.0",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.3.15",
+    "morgan": "~1.9.0",
+    "nodemailer": "^4.7.0",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "shortid": "^2.2.14",
+    "errorhandler": "^1.5.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "dotenv": "^6.2.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.7",
+    "supertest": "^3.3.0",
+    "tap": "^12.1.1"
+  }
+}
