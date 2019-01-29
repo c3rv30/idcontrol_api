@@ -12,12 +12,12 @@ const signToken = async (user) => {
       exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
     }, JWT_SECRET);
   } catch (error) {
-    console.log(error);
+    return console.log(error);
   }
 };
 
 module.exports = {
-  signUp: async (req, res, next) => {
+  signUp: async (req, res) => {
     try {
       const { email, password } = req.value.body;
 
@@ -41,23 +41,25 @@ module.exports = {
       // Generate the token
       const token = signToken(newUser);
       // Respond with token
-      res.status(200).json({ token });
+      return res.status(200).json({ token });
     } catch (error) {
       console.log(error);
+      return res.status(403).json({ error: 'Error signUp' });
     }
   },
 
-  signIn: async (req, res, next) => {
+  signIn: async (req, res) => {
     try {
       // Generate token
       const token = signToken(req.user);
       return res.status(200).send({ token });
     } catch (error) {
       console.log(error);
+      return res.status(403).json({ error: 'Error signIn' });
     }
   },
 
-  secret: async (req, res, next) => {
+  secret: async (req, res) => {
     console.log('I managed to get here!');
     res.json({ secret: 'resource' });
   },
