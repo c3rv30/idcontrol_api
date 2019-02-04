@@ -1,6 +1,6 @@
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
-const { ExtractJwt } = require('passport-jwt');
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 
 const config = require('../../configuration');
@@ -21,36 +21,36 @@ passport.use(new JwtStrategy({
     }
 
     // Otherwise, return the user
-    return done(null, user);
+    done(null, user);
   } catch (error) {
-    return done(error, false);
+    done(error, false);
   }
 }));
 
-// LOCAL STRATEGY
+//LOCAL STRATEGY
 passport.use(new LocalStrategy({
-  usernameField: 'email',
+    usernameField: 'email'
 }, async (email, password, done) => {
-  try {
-    // Find the user given the email
-    const user = await User.findOne({ 'local.email': email });
+    try {
+        // Find the user given the email
+        const user = await User.findOne({ "local.email": email });
 
-    // If not, handle it
-    if (!user) {
-      return done(null, false, { message: 'El Usuario no existe' });
+        // If not, handle it
+        if (!user) {
+            return done(null, false, { message: 'Las pelotas!!!!' });
+        }
+
+        // Check if the password is correct
+        const isMatch = await user.isValidPassword(password);
+
+        // If not, handle it
+        if (!isMatch) {
+            return done(null, false, { message: 'Frutillita !!!!' });
+        }
+
+        // Otherwise, return the user
+        done(null, user);
+    } catch (error) {
+        done(error, false, { message: 'Hola salvaje!!!!' });
     }
-
-    // Check if the password is correct
-    const isMatch = await user.isValidPassword(password);
-
-    // If not, handle it
-    if (!isMatch) {
-      return done(null, false, { message: 'La Contraseña es incorrecta' });
-    }
-
-    // Otherwise, return the user
-    return done(null, user, { message: 'Inicio de sesión correcto' });
-  } catch (error) {
-    return done(error, false);
-  }
 }));

@@ -1,6 +1,6 @@
 const router = require('express-promise-router')();
-const UsersController = require('../user/userController');
 const { validateBody, schemas } = require('../../helpers/routeHelpers');
+const UsersController = require('../user/userController');
 
 // User Routes
 router.route('/signup')
