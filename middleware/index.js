@@ -4,8 +4,8 @@ const passportConf = require('../components/passport/passport');
 // const localAuth = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
-const localAuth = async (req, res, next) => {
-  await passport.authenticate('local', (error, user, info) => {
+const localAuth = (req, res, next) => {
+  passport.authenticate('local', (error, user, info) => {
     // this will execute in any case, even if a passport strategy will find an error
     // log everything to console
     console.log(error);

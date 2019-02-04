@@ -38,7 +38,7 @@ const userSchema = new Schema({
 /* 'runSettersOnQuery' is used to implement the specifications in our model schema such as the 'trim' option. */
 
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   try {
     this.local.email = this.local.email.toLowerCase(); // ensure email ar e in lowercase
     const currentDate = new Date().getTime();
@@ -64,7 +64,7 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.isValidPassword = async function (newPassword) {
+userSchema.methods.isValidPassword = async function(newPassword) {
   try {
     return await bcrypt.compare(newPassword, this.local.password);
   } catch (error) {
