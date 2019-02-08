@@ -2,22 +2,27 @@ const JWT = require('jsonwebtoken');
 const { JWT_SECRET } = require('../../configuration');
 const User = require('./user');
 
-
-signToken = user => {
+function signToken(user) {
   return JWT.sign({
     iss: 'shtspa22',
     sub: user.id,
     iat: new Date().getTime(), // current time
-    exp: new Date().setDate(new Date().getDate() + 1) // current time + 1 day ahead
+    exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
   }, JWT_SECRET);
 }
 
+
 module.exports = {
   signUp: async (req, res, next) => {
-    const { email, password } = req.value.body;
+    const {
+      email,
+      password,
+      fullname,
+      roleUser,
+    } = req.value.body;
 
     // Check if there is a user with the same email
-    const foundUser = await User.findOne({ "local.email": email });
+    const foundUser = await User.findOne({ 'local.email': email });
     if (foundUser) {
       return res.status(403).json({ error: 'Email is already in use' });
     }
@@ -26,9 +31,11 @@ module.exports = {
     const newUser = new User({
       method: 'local',
       local: {
-        email: email, 
-        password: password
-      }
+        email,
+        password,
+      },
+      fullname,
+      roleUser,
     });
 
     await newUser.save();
@@ -36,7 +43,8 @@ module.exports = {
     // Generate the token
     const token = signToken(newUser);
     // Respond with token
-    res.status(200).json({ token });
+    next();
+    return res.status(200).json({ token });
   },
 
   signIn: async (req, res, next) => {
@@ -46,6 +54,7 @@ module.exports = {
       return res.status(200).send({ token });
     } catch (error) {
       console.log(error);
+      next();
       return res.status(403).json({ error: 'Error signIn' });
     }
   },
