@@ -43,7 +43,7 @@ module.exports = {
     // Generate the token
     const token = signToken(newUser);
     // Respond with token
-    next();
+    //next();
     return res.status(200).json({ token });
   },
 
@@ -51,7 +51,7 @@ module.exports = {
     try {
       // Generate token
       const token = signToken(req.user);
-      return res.status(200).send({ token });
+      return res.status(200).json({ token });
     } catch (error) {
       console.log(error);
       next();
