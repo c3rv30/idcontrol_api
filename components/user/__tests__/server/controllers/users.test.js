@@ -1,14 +1,16 @@
 // will work for linux for windows we are going to user cross-env in package json
-//process.env.NODE_ENV = 'test';
+// process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const faker = require('faker');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const rewire = require('rewire');
+
 const { expect } = chai;
 
 const User = require('../../../user');
+
 const userController = rewire('../../../userController.js');
 
 chai.use(sinonChai);
@@ -16,7 +18,7 @@ chai.use(sinonChai);
 let sandbox = null;
 
 describe('Users controller', () => {
-  let req = {
+  const req = {
     user: {
       id: faker.random.number(),
     },
@@ -27,7 +29,7 @@ describe('Users controller', () => {
       },
     },
   };
-  let res = {
+  const res = {
     json: function() {
       return this;
     },

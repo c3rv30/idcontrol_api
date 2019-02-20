@@ -59,6 +59,29 @@ module.exports = {
     }
   },
 
+  editUser: async (req, res) => {
+    try {
+      const {
+        email,
+        password,
+        fullname,
+        roleUser,
+      } = req.value.body;
+      const issetUser = req.body;
+      // Check if there is a user with the same email
+      const userr = await User.findOneAndUpdate({ 'local.email': req.body.email },
+        { $set: issetUser },
+        { new: true });
+      if (!userr) {
+        return res.status(403).json({ succesful: 'Usuario no editado' });
+      }
+
+      return res.status(200).json({ succesful: 'Usuario editado' });
+    } catch (error) {
+      return res.status(403).json({ error: 'Error edit User' });
+    }
+  },
+
   secret: async (req, res) => {
     console.log('I managed to get here!');
     res.json({ secret: 'resource' });

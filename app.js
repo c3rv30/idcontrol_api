@@ -8,6 +8,7 @@ const cors = require('cors');
 const errorHandler = require('errorhandler');
 const session = require('cookie-session'); // we're using 'express-session' as 'session' here
 const passport = require('passport');
+const mongoose = require('mongoose');
 
 // Initiate app
 const app = express();
@@ -42,6 +43,10 @@ app.use(
 // Passport initialize.
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Mongoose config
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 
 function errorNotification(err, str, req) {

@@ -17,4 +17,7 @@ router.route('/signin')
 router.route('/secret')
   .get(passportJWT, UsersController.secret);
 
+router.route('/edituser')
+  .put(validateBody(schemas.authSchema), passportSignIn, UsersController.editUser);
+
 module.exports = router;
