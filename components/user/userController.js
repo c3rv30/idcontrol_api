@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 const { JWT_SECRET } = require('../../configuration');
 const User = require('./user');
+const hash = require('../bcrypt');
 
 function signToken(user) {
   return JWT.sign({
@@ -59,31 +60,69 @@ module.exports = {
     }
   },
 
-  editUser: async (req, res) => {
+  updateUser: async (req, res) => {
     try {
+      const userID = req.params.id;
+      let { password } = req.value.body;
       const {
         email,
-        password,
         fullname,
         roleUser,
       } = req.value.body;
-      const issetUser = req.body;
-      // Check if there is a user with the same email
-      const userr = await User.findOneAndUpdate({ 'local.email': req.body.email },
-        { $set: issetUser },
-        { new: true });
-      if (!userr) {
-        return res.status(403).json({ succesful: 'Usuario no editado' });
+
+      const pass = password;
+      const passwordHash = await hash.genHash(pass);
+      password = passwordHash;
+      const updateUser = {
+        method: 'local',
+        local: {
+          email,
+          password,
+        },
+        fullname,
+        roleUser,
+      };
+
+      if (userID != req.user.sub) {
+        return res.status(500).json({ message: 'No tienes permiso para actualizar usuario' });
       }
 
-      return res.status(200).json({ succesful: 'Usuario editado' });
+      console.log(updateUser);
+      // Check if there is a user with the same email
+      await User.findByIdAndUpdate(userID, updateUser, { new: true });
+
+      if (updateUser) {
+        return res.status(200).json({ succesful: 'Usuario editado' });
+      }
     } catch (error) {
+      console.log(error);
       return res.status(403).json({ error: 'Error edit User' });
     }
+  },
+
+  /* Logout sesion */
+
+  logout: async (req, res) => {
+    try {
+      req.logOut();
+      console.log(req.user);
+      res.redirect('/');
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  /* Delete User */
+  deleteUser: async (req, res) => {
+    res.json({ message: 'Delete user link' });
   },
 
   secret: async (req, res) => {
     console.log('I managed to get here!');
     res.json({ secret: 'resource' });
+  },
+
+  pruebas: async (req, res) => {
+    res.status(200).send({ message: 'Probando controlador de usuarios', user: req.user });
   },
 };

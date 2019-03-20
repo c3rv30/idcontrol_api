@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const hash = require('../bcrypt');
+
 
 const { Schema } = mongoose;
 
@@ -38,7 +40,8 @@ const userSchema = new Schema({
   },
 }, { runSettersOnQuery: true });
 
-/* 'runSettersOnQuery' is used to implement the specifications in our model schema such as the 'trim' option. */
+/* 'runSettersOnQuery' is used to implement the specifications
+  in our model schema such as the 'trim' option. */
 
 
 userSchema.pre('save', async function pre(next) {
@@ -49,20 +52,17 @@ userSchema.pre('save', async function pre(next) {
     if (!this.created_at) {
       this.createdAt = currentDate;
     }
-    console.log('entered');
+    console.log('entered to middleware');
     if (this.method !== 'local') {
-      next();
+      return next();
     }
-
-    // Generate salt
-    const salt = await bcrypt.genSalt(10);
-    // Generate a password hash ( salt + hash )
-    const passwordHash = await bcrypt.hash(this.local.password, salt);
-    // Re-assign hashed version over original, plain text password
+    const pass = this.local.password;
+    const passwordHash = await hash.genHash(pass);
     this.local.password = passwordHash;
-    console.log('exited');
+    console.log('exited from middleware');
     next();
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
@@ -74,6 +74,7 @@ userSchema.methods.isValidPassword = async function isVal(newPassword) {
     throw new Error(error);
   }
 };
+
 const User = mongoose.model('user', userSchema);
 
 module.exports = User;

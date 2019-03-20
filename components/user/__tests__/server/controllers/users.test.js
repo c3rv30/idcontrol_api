@@ -69,7 +69,9 @@ describe('Users controller', () => {
     });
   });
 
+  // eslint-disable-next-line no-undef
   describe('signIn', () => {
+    // eslint-disable-next-line no-undef
     it('should return token when signIn called', async () => {
       sandbox.spy(res, 'json');
       sandbox.spy(res, 'status');

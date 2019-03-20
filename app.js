@@ -13,17 +13,18 @@ const mongoose = require('mongoose');
 // Initiate app
 const app = express();
 
-// Import Routes
-const router = require('./routes');
-
-const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
-
 // Configure app
 app.use(cors());
 app.use(helmet());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Import Routes
+const router = require('./routes');
+
+const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
+
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(

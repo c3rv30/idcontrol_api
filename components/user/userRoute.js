@@ -1,8 +1,9 @@
 const router = require('express-promise-router')();
 const passport = require('passport');
-const passportConf = require('../passport/passport');
+require('../passport/passport');
 const { validateBody, schemas } = require('../../helpers/routeHelpers');
 const UsersController = require('../user/userController');
+const middlewareAuth = require('../../middleware/auth');
 
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
@@ -14,10 +15,21 @@ router.route('/signup')
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
 
+router.route('/update-user/:id')
+  .put(validateBody(schemas.authSchema), middlewareAuth.ensureAuth, UsersController.updateUser);
+
+router.route('/logout')
+  .get(middlewareAuth.ensureAuth, UsersController.logout);
+
+router.route('/delete-user')
+  .delete(middlewareAuth.ensureAuth, UsersController.deleteUser);
+
 router.route('/secret')
   .get(passportJWT, UsersController.secret);
 
-router.route('/edituser')
-  .put(validateBody(schemas.authSchema), passportSignIn, UsersController.editUser);
+
+/* link prueba middleware */
+router.route('/probando-middleware')
+  .get(middlewareAuth.ensureAuth, UsersController.pruebas);
 
 module.exports = router;

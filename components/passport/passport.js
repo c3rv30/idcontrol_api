@@ -1,6 +1,6 @@
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+const { ExtractJwt } = require('passport-jwt');
 const LocalStrategy = require('passport-local').Strategy;
 
 const config = require('../../configuration');
@@ -21,9 +21,9 @@ passport.use(new JwtStrategy({
     }
 
     // Otherwise, return the user
-    done(null, user);
+    return done(null, user);
   } catch (error) {
-    done(error, false);
+    return done(error, false);
   }
 }));
 
