@@ -123,3 +123,4 @@ typings/
 nvm/
 
 # End of https://www.gitignore.io/api/node,macos,visualstudiocode
+/package-lock.json
