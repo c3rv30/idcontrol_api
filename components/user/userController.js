@@ -5,6 +5,8 @@ const hash = require('../bcrypt');
 
 function signToken(user) {
   return JWT.sign({
+    role: user.roleUser,
+    name: user.fullname,
     iss: 'shtspa22',
     sub: user.id,
     iat: new Date().getTime(), // current time
@@ -14,7 +16,7 @@ function signToken(user) {
 
 
 module.exports = {
-  signUp: async (req, res, next) => {
+  signUp: async (req, res) => {
     const {
       email,
       password,
@@ -44,7 +46,6 @@ module.exports = {
     // Generate the token
     const token = signToken(newUser);
     // Respond with token
-    //next();
     return res.status(200).json({ token });
   },
 
@@ -60,7 +61,7 @@ module.exports = {
     }
   },
 
-  updateUser: async (req, res) => {
+  updateUser: async (req, res, next) => {
     try {
       const userID = req.params.id;
       let { password } = req.value.body;
@@ -83,7 +84,7 @@ module.exports = {
         roleUser,
       };
 
-      if (userID != req.user.sub) {
+      if (userID !== req.user.sub) {
         return res.status(500).json({ message: 'No tienes permiso para actualizar usuario' });
       }
 
@@ -98,6 +99,7 @@ module.exports = {
       console.log(error);
       return res.status(403).json({ error: 'Error edit User' });
     }
+    return next();
   },
 
   /* Logout sesion */
@@ -113,8 +115,57 @@ module.exports = {
   },
 
   /* Delete User */
-  deleteUser: async (req, res) => {
-    res.json({ message: 'Delete user link' });
+  deleteUser: async (req, res, next) => {
+    try {
+      const userID = req.params.id;
+
+      if (userID !== req.user.sub) {
+        return res.status(500).json({ message: 'No tienes permiso para actualizar usuario' });
+      }
+
+      const userRemoved = await User.findByIdAndRemove(userID, { new: true });
+
+      if (userRemoved) {
+        return res.status(200).json({ message: 'Usuario Eliminado' });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ message: 'Error remove user' });
+    }
+    return next();
+  },
+
+  passwordreset: async (req, res, next) => {
+    try {
+      if (req.body.email !== undefined) {
+        const emailAddress = req.body.email;
+
+        // TODO: Using email, find user from your database.
+        const payload = {
+          id: 1, // User ID from database
+          enail: emailAddress,
+        };
+
+        // TODO: Make this a one-time-use token by using the user's
+        // current password hash from the database, and combine it
+        // with the user's created date to make a very unique secret key!
+        // For example:
+        // var secret = user.password + ‘-' + user.created.getTime();
+        const secret = 'fe1a1915a379f3be5394b64d14794932-1506868106675';
+
+        const token = JWT.encode(payload, secret);
+
+        // TODO: Send email containing link to reset password.
+        // In our case, will just return a link to click.
+        res.send(`<a href="/resetpassword/${payload.id}/${token}">Reset password</a>`);
+      } else {
+        res.send('Email address is missing.');
+      }
+      return next();
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ message: 'Error remove user' });
+    }
   },
 
   secret: async (req, res) => {

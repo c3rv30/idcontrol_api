@@ -19,6 +19,15 @@ module.exports = {
       console.log(error);
       return res.status(404).send({ message: 'Token no válido' });
     }
-    next();
+    return next();
+  },
+
+
+  isAdmin: async (req, res, next) => {
+    if (req.user.roleUser != 'ROLE_ADMIN') {
+      console.log(req.user.roleUser);
+      return res.status(200).send({ message: 'No tienes autorizacion' });
+    }
+    return next();
   },
 };

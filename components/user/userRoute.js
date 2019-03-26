@@ -12,21 +12,36 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 router.route('/signup')
   .post(validateBody(schemas.authSchema), UsersController.signUp);
 
+router.route('/update-user/:id')
+  .put(validateBody(schemas.authSchema),
+    [middlewareAuth.ensureAuth], UsersController.updateUser);
+
+router.route('/delete-user/:id')
+  .delete([middlewareAuth.ensureAuth, middlewareAuth.isAdmin], UsersController.deleteUser);
+
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
-
-router.route('/update-user/:id')
-  .put(validateBody(schemas.authSchema), middlewareAuth.ensureAuth, UsersController.updateUser);
 
 router.route('/logout')
   .get(middlewareAuth.ensureAuth, UsersController.logout);
 
-router.route('/delete-user')
-  .delete(middlewareAuth.ensureAuth, UsersController.deleteUser);
+router.route('resetpassword')
+  .post(UsersController.passwordreset);
 
+
+
+router.route('/forgotpassword')
+  .get(async (req, res) => {
+    res.send('<form action="/passwordreset" method="POST">'
+        + '<input type="email" name="email" value="" placeholder="Enter your email address..." />'
+        + '<input type="submit" value="Reset Password" />'
+        + '</form>');
+  });
+
+
+/* validate token */
 router.route('/secret')
   .get(passportJWT, UsersController.secret);
-
 
 /* link prueba middleware */
 router.route('/probando-middleware')

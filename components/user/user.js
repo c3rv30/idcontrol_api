@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const hash = require('../bcrypt');
 
@@ -60,16 +59,16 @@ userSchema.pre('save', async function pre(next) {
     const passwordHash = await hash.genHash(pass);
     this.local.password = passwordHash;
     console.log('exited from middleware');
-    next();
+    return next();
   } catch (error) {
     console.log(error);
-    next(error);
+    return next(error);
   }
 });
 
 userSchema.methods.isValidPassword = async function isVal(newPassword) {
   try {
-    return await bcrypt.compare(newPassword, this.local.password);
+    return await hash.compareBcrypt(newPassword, this.local.password);
   } catch (error) {
     throw new Error(error);
   }

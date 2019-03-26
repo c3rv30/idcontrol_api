@@ -27,30 +27,30 @@ passport.use(new JwtStrategy({
   }
 }));
 
-//LOCAL STRATEGY
+// LOCAL STRATEGY
 passport.use(new LocalStrategy({
-    usernameField: 'email'
+  usernameField: 'email',
 }, async (email, password, done) => {
-    try {
-        // Find the user given the email
-        const user = await User.findOne({ "local.email": email });
+  try {
+    // Find the user given the email
+    const user = await User.findOne({ 'local.email': email });
 
-        // If not, handle it
-        if (!user) {
-            return done(null, false, { message: 'Las pelotas!!!!' });
-        }
-
-        // Check if the password is correct
-        const isMatch = await user.isValidPassword(password);
-
-        // If not, handle it
-        if (!isMatch) {
-            return done(null, false, { message: 'Frutillita !!!!' });
-        }
-
-        // Otherwise, return the user
-        done(null, user);
-    } catch (error) {
-        done(error, false, { message: 'Hola salvaje!!!!' });
+    // If not, handle it
+    if (!user) {
+      return done(null, false, { message: 'Las pelotas!!!!' });
     }
+
+    // Check if the password is correct
+    const isMatch = await user.isValidPassword(password);
+
+    // If not, handle it
+    if (!isMatch) {
+      return done(null, false, { message: 'Frutillita !!!!' });
+    }
+
+    // Otherwise, return the user
+    done(null, user);
+  } catch (error) {
+    done(error, false, { message: 'Hola salvaje!!!!' });
+  }
 }));
