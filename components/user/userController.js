@@ -1,8 +1,15 @@
 const JWT = require('jsonwebtoken');
-const { JWT_SECRET } = require('../../configuration');
-const User = require('./user');
+const nodemailer = require('nodemailer');
+const nodemailerSendgrid = require('nodemailer-sendgrid');
 const hash = require('../bcrypt');
+const User = require('./user');
+const { JWT_SECRET } = require('../../configuration');
 
+
+
+
+
+/** MODULARIZAR saxjhhsujadjhusahjksa */
 function signToken(user) {
   return JWT.sign({
     role: user.roleUser,
@@ -102,8 +109,102 @@ module.exports = {
     return next();
   },
 
-  /* Logout sesion */
 
+
+  /* Form forgotpasswor */
+  forgotpass: async (req, res) => {
+    try {
+      return res.send('<h2>Forgot Password</h2><form action="/api/v1/resetpass" method="POST">'
+        + '<input type="email" name="email" value="" placeholder="Enter your email address..." />'
+        + '<input type="submit" value="Reset Password" />'
+        + '</form>');
+    } catch (error) {
+      return error;
+    }
+  },
+
+
+
+
+  passwordreset: async (req, res, next) => {
+    try {
+      if (req.body.email !== undefined) {
+        const { email } = req.body;
+
+        // TODO: Using email, find user from your database.
+        // Check if there is a user with the same email
+        const foundUser = await User.findOne({ 'local.email': email });
+        if (!foundUser) {
+          return res.status(403).json({ message: 'Usuario no encontrado' });
+        }
+        const { id } = foundUser;
+        // eslint-disable-next-line prefer-destructuring
+        const password = foundUser.local.password;
+        const { createdAt } = foundUser;
+
+        const payload = {
+          id, // User ID from database
+          email,
+        };
+
+        // TODO: Make this a one-time-use token by using the user's
+        // current password hash from the database, and combine it
+        // with the user's created date to make a very unique secret key!
+        // For example:
+        // var secret = user.password + ‘-' + user.created.getTime();
+        // const secret = 'fe1a1915a379f3be5394b64d14794932-1506868106675';
+        // const token = JWT.encode(payload, secret);
+        const secret = `${password}-${createdAt}`;
+        const token = JWT.sign(payload, secret);
+
+        foundUser.passResetKey = token;
+        foundUser.passKeyExpires = Date.now() + 3600000;
+        foundUser.save();
+        res.json({ message: 'RESETPASS' });
+        // TODO: Send email containing link to reset password.
+        // In our case, will just return a link to click.
+
+        const transport = nodemailer.createTransport(
+          nodemailerSendgrid({
+            apiKey: process.env.SENDGRID_API_KEY,
+          }),
+        );
+        const mailOptions = {
+          to: email,
+          from: 'soporte@smarthub.cl',
+          subject: 'Reset your password on IDCONTROL',
+          text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        http://${req.headers.host}/api/v1/resetpass/${token}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        };
+        transport.sendMail(mailOptions);
+          /* .then(() => {
+            res.status(200).send({ msg: `An e-mail has been sent to ${email} with further instructions.` });
+          })
+          .catch((err) => {
+            console.log('ERROR: Could not send forgot password email after security downgrade.\n', err);
+            res.status(403).send({ msg: 'Error sending the password reset message. Please try again shortly.' });
+            return err;
+          });
+          */
+        // res.send(`<a href="/resetpassword/${payload.id}/${token}">Reset password</a>`);
+      } else {
+        res.send('Email address is missing.');
+      }
+      return next();
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ message: 'Error remove user' });
+    }
+  },
+
+
+
+
+
+
+  /* Logout sesion */
   logout: async (req, res) => {
     try {
       req.logOut();
@@ -112,6 +213,15 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  secret: async (req, res) => {
+    console.log('I managed to get here!');
+    res.json({ secret: 'resource' });
+  },
+
+  pruebas: async (req, res) => {
+    res.status(200).send({ message: 'Probando controlador de usuarios', user: req.user });
   },
 
   /* Delete User */
@@ -133,47 +243,5 @@ module.exports = {
       return res.status(403).json({ message: 'Error remove user' });
     }
     return next();
-  },
-
-  passwordreset: async (req, res, next) => {
-    try {
-      if (req.body.email !== undefined) {
-        const emailAddress = req.body.email;
-
-        // TODO: Using email, find user from your database.
-        const payload = {
-          id: 1, // User ID from database
-          enail: emailAddress,
-        };
-
-        // TODO: Make this a one-time-use token by using the user's
-        // current password hash from the database, and combine it
-        // with the user's created date to make a very unique secret key!
-        // For example:
-        // var secret = user.password + ‘-' + user.created.getTime();
-        const secret = 'fe1a1915a379f3be5394b64d14794932-1506868106675';
-
-        const token = JWT.encode(payload, secret);
-
-        // TODO: Send email containing link to reset password.
-        // In our case, will just return a link to click.
-        res.send(`<a href="/resetpassword/${payload.id}/${token}">Reset password</a>`);
-      } else {
-        res.send('Email address is missing.');
-      }
-      return next();
-    } catch (error) {
-      console.log(error);
-      return res.status(403).json({ message: 'Error remove user' });
-    }
-  },
-
-  secret: async (req, res) => {
-    console.log('I managed to get here!');
-    res.json({ secret: 'resource' });
-  },
-
-  pruebas: async (req, res) => {
-    res.status(200).send({ message: 'Probando controlador de usuarios', user: req.user });
   },
 };

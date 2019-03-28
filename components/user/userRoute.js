@@ -25,18 +25,16 @@ router.route('/signin')
 router.route('/logout')
   .get(middlewareAuth.ensureAuth, UsersController.logout);
 
-router.route('resetpassword')
+
+  
+
+router.route('/forgotpass')
+  .get(UsersController.forgotpass);
+
+router.route('/resetpass')
   .post(UsersController.passwordreset);
 
 
-
-router.route('/forgotpassword')
-  .get(async (req, res) => {
-    res.send('<form action="/passwordreset" method="POST">'
-        + '<input type="email" name="email" value="" placeholder="Enter your email address..." />'
-        + '<input type="submit" value="Reset Password" />'
-        + '</form>');
-  });
 
 
 /* validate token */
