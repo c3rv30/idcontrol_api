@@ -49,8 +49,8 @@ passport.use(new LocalStrategy({
     }
 
     // Otherwise, return the user
-    done(null, user);
+    return done(null, user);
   } catch (error) {
-    done(error, false, { message: 'Hola salvaje!!!!' });
+    return done(error, false, { message: 'Hola salvaje!!!!' });
   }
 }));

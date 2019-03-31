@@ -25,14 +25,12 @@ router.route('/signin')
 router.route('/logout')
   .get(middlewareAuth.ensureAuth, UsersController.logout);
 
+/** Get Form forgot pass */
+router.route('/forgot')
+  .get(UsersController.getForgot);
 
-  
-
-router.route('/forgotpass')
-  .get(UsersController.forgotpass);
-
-router.route('/resetpass')
-  .post(UsersController.passwordreset);
+router.route('/forgot')
+  .post(UsersController.postForgot);
 
 
 

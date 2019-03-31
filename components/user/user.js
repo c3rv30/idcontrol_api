@@ -27,6 +27,7 @@ const userSchema = new Schema({
     type: String,
     trim: true,
   },
+  equipo: { type: Schema.Types.ObjectId, ref: 'Equipo' },
   passResetKey: String,
   passKeyExpires: Number,
   createdAt: {

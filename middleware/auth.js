@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const { JWT_SECRET } = require('../configuration');
 
+
+/** PENDIENTE PARA VALIDACION */
 module.exports = {
   ensureAuth: async (req, res, next) => {
     if (!req.headers.authorization) {
