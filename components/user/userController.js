@@ -12,6 +12,7 @@ module.exports = {
         password,
         fullname,
         roleUser,
+        equipo,
       } = req.value.body;
 
       // Check if there is a user with the same email
@@ -29,6 +30,7 @@ module.exports = {
         },
         fullname,
         roleUser,
+        equipo,
       });
 
       await newUser.save();
@@ -46,7 +48,7 @@ module.exports = {
   signIn: async (req, res, next) => {
     try {
       // Generate token
-      const token = signJwt.signToken(req.user);
+      const token = await signJwt.signToken(req.user);
       return res.status(200).json({ token });
     } catch (error) {
       console.log(error);
@@ -63,6 +65,7 @@ module.exports = {
         email,
         fullname,
         roleUser,
+        equipo,
       } = req.value.body;
 
       const pass = password;
@@ -76,6 +79,7 @@ module.exports = {
         },
         fullname,
         roleUser,
+        equipo,
       };
 
       if (userID !== req.user.sub) {
@@ -112,10 +116,20 @@ module.exports = {
     res.json({ secret: 'resource' });
   },
 
-  pruebas: async (req, res) => {
-    res.status(200).send({ message: 'Probando controlador de usuarios', user: req.user });
+  pruebas: async (req, res, next) => {
+    try {
+      // Check if there is a user with the same email
+      const foundUserEquipo = await User.findOne({ 'local.email': 'jperez@gmail.com' }).populate('equipo');
+      if (foundUserEquipo) {
+        console.log(foundUserEquipo);
+        return res.status(200).json({ message: 'ñiooooo' });
+      }
+      return next();
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send({ message: 'El terrible error!!!' });
+    }
   },
-
   /* Delete User */
   deleteUser: async (req, res, next) => {
     try {

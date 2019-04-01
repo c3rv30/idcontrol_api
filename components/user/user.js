@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const hash = require('../bcrypt');
 
-
 const { Schema } = mongoose;
 
 // we create a user schema
@@ -27,7 +26,7 @@ const userSchema = new Schema({
     type: String,
     trim: true,
   },
-  equipo: { type: Schema.Types.ObjectId, ref: 'Equipo' },
+  equipo: { type: Schema.Types.ObjectId, ref: 'equipo' },
   passResetKey: String,
   passKeyExpires: Number,
   createdAt: {

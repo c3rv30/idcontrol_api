@@ -1,8 +1,8 @@
 const router = require('express-promise-router')();
 const passport = require('passport');
-require('../passport/passport');
 const { validateBody, schemas } = require('../../helpers/routeHelpers');
-const UsersController = require('../user/userController');
+const UsersController = require('./userController');
+require('../passport/passport');
 const middlewareAuth = require('../../middleware/auth');
 
 const passportSignIn = passport.authenticate('local', { session: false });
@@ -10,7 +10,8 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 
 // User Routes
 router.route('/signup')
-  .post(validateBody(schemas.authSchema), UsersController.signUp);
+  .post(validateBody(schemas.authSchema),
+    UsersController.signUp);
 
 router.route('/update-user/:id')
   .put(validateBody(schemas.authSchema),

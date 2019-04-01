@@ -19,6 +19,15 @@ module.exports = {
       password: Joi.string().required(),
       fullname: Joi.string(),
       roleUser: Joi.string(),
+      equipo: Joi.string().allow(null, ''),
+    }),
+    equipoSchema: Joi.object().keys({
+      name: Joi.string(),
+      email: Joi.string().email(),
+      dir: Joi.string(),
+      ciudad: Joi.string(),
+      comuna: Joi.string(),
+      image: Joi.string().allow(null, ''),
     }),
   },
 };
