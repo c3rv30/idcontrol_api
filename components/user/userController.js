@@ -36,9 +36,9 @@ module.exports = {
       await newUser.save();
 
       // Generate the token
-      const token = await signJwt.signToken(newUser);
+      // const token = await signJwt.signToken(newUser);
       // Respond with token
-      return res.status(200).json({ token });
+      return res.status(200).json({ token: 'Registro Correcto' });
     } catch (error) {
       console.log(error);
       return res.status(403).json({ error: 'Error signUp' });
@@ -47,9 +47,25 @@ module.exports = {
 
   signIn: async (req, res, next) => {
     try {
+      console.log(req.user);
       // Generate token
       const token = await signJwt.signToken(req.user);
-      return res.status(200).json({ token });
+      const {
+        local: { email },
+        _id,
+        fullname,
+        roleUser,
+        equipo,
+      } = req.user;
+
+      return res.status(200).json({
+        email,
+        _id,
+        fullname,
+        roleUser,
+        equipo,
+        token,
+      });
     } catch (error) {
       console.log(error);
       next();

@@ -30,10 +30,11 @@ passport.use(new JwtStrategy({
 // LOCAL STRATEGY
 passport.use(new LocalStrategy({
   usernameField: 'email',
+  passwordField: 'password',
 }, async (email, password, done) => {
   try {
     // Find the user given the email
-    const user = await User.findOne({ 'local.email': email });
+    const user = await User.findOne({ 'local.email': email }).populate('equipo');
 
     // If not, handle it
     if (!user) {
@@ -54,3 +55,11 @@ passport.use(new LocalStrategy({
     return done(error, false, { message: 'Hola salvaje!!!!' });
   }
 }));
+
+passport.serializeUser(async (user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (user, done) => {
+  done(null, user);
+});

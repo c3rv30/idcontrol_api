@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('../user/user');
 
 const { Schema } = mongoose;
 
@@ -20,13 +21,23 @@ const equipoSchema = new Schema({
   },
 }, { runSettersOnQuery: true });
 
-equipoSchema.pre('save', async function pre(next) {
+equipoSchema.pre('save', async (next) => {
   try {
-    this.email = this.email.toLowerCase(); // ensure email ar e in lowercase
+    // this.email = this.email.toLowerCase(); // ensure email are in lowercase
     return next();
   } catch (error) {
     console.log(error);
     return next(error);
+  }
+});
+
+equipoSchema.pre('deleteOne', async (next) => {
+  try {
+    const equipo = this;
+    User.model('user').deleteOne({ equipo: equipo._id }, next);
+    return next();
+  } catch (error) {
+    return console.log(error);
   }
 });
 
