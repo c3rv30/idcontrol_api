@@ -26,7 +26,7 @@ module.exports = {
 
 
   isAdmin: async (req, res, next) => {
-    if (req.user.roleUser != 'ROLE_ADMIN') {
+    if (req.user.roleUser !== 'ROLE_ADMIN') {
       console.log(req.user.roleUser);
       return res.status(200).send({ message: 'No tienes autorizacion' });
     }

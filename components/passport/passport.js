@@ -50,6 +50,7 @@ passport.use(new LocalStrategy({
     }
 
     // Otherwise, return the user
+    console.log(user);
     return done(null, user);
   } catch (error) {
     return done(error, false, { message: 'Hola salvaje!!!!' });
