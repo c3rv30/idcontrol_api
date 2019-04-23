@@ -1,7 +1,7 @@
 const router = require('express-promise-router')();
 const passport = require('passport');
 const { validateBody, schemas } = require('../../helpers/routeHelpers');
-const UsersController = require('./userController');
+const UsersController = require('./user.controller');
 require('../passport/passport');
 const middlewareAuth = require('../../middleware/auth');
 

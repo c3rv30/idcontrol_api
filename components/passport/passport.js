@@ -4,7 +4,7 @@ const { ExtractJwt } = require('passport-jwt');
 const LocalStrategy = require('passport-local').Strategy;
 
 const config = require('../../configuration');
-const User = require('../user/user');
+const User = require('../user/user.model');
 
 // JSON WEB TOKENS STRATEGY
 passport.use(new JwtStrategy({
@@ -50,7 +50,7 @@ passport.use(new LocalStrategy({
     }
 
     // Otherwise, return the user
-    console.log(user);
+    // console.log(user);
     return done(null, user);
   } catch (error) {
     return done(error, false, { message: 'Hola salvaje!!!!' });

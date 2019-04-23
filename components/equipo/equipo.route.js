@@ -1,6 +1,6 @@
 const router = require('express-promise-router')();
 const { validateBody, schemas } = require('../../helpers/routeHelpers');
-const equipoController = require('./equipoController');
+const equipoController = require('./equipo.controller');
 const middlewareAuth = require('../../middleware/auth');
 
 const upload = require('../../helpers/avatar.config');

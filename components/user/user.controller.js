@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const nodemailerSendgrid = require('nodemailer-sendgrid');
 const hash = require('../bcrypt');
-const User = require('./user');
+const User = require('./user.model');
 const signJwt = require('../jwt');
 
 module.exports = {
@@ -47,7 +47,7 @@ module.exports = {
 
   signIn: async (req, res, next) => {
     try {
-      console.log(req.user);
+      // console.log(req.user);
       // Generate token
       const token = await signJwt.signToken(req.user);
       const {
