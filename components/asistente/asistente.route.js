@@ -9,7 +9,10 @@ const middlewareAuth = require('../../middleware/auth');
   .get(middlewareAuth.ensureAuth, asistenteController.pruebas); */
 
 /* link prueba middleware */
-router.route('/probando-middleware-asistente')
-  .get(middlewareAuth.ensureAuth, asistenteController.pruebas);
+// router.route('/probando-middleware-asistente')
+//  .get(middlewareAuth.ensureAuth, asistenteController.pruebas);
+
+router.route('/asiscounts')
+  .post(asistenteController.asisCounter);
 
 module.exports = router;
