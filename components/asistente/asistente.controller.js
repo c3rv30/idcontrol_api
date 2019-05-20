@@ -12,11 +12,11 @@ module.exports = {
   */
 
   asisCounter: async (req, res) => {
-    const { equipo } = req.body;
-    // const startOfMonth = moment().startOf('month').format('YYYY/MM/DD');
-    // const endOfMonth = moment().endOf('month').format('YYYY/MM/DD');
-    const lastYear = moment().subtract(1, 'years').format('YYYY');
     try {
+      const { equipo } = req.body;
+      // const startOfMonth = moment().startOf('month').format('YYYY/MM/DD');
+      // const endOfMonth = moment().endOf('month').format('YYYY/MM/DD');
+      const lastYear = moment().subtract(1, 'years').format('YYYY');
       const countNio = await Asistente.aggregate(
         [
           { $match: { equipo, fecha: { $gte: new Date(lastYear) } } },
@@ -50,4 +50,59 @@ module.exports = {
       return res.status(404).send({ message: 'error' });
     }
   },
+
+  getAsisByRutDate: async (req, res) => {
+    try {
+      const { rut, equipo } = req.body;
+      const fec = '';
+      const start = moment(fec, 'DD/MM/YYYY').format('YYYY-MM-DD');
+      const end = moment(fec, 'DD/MM/YYYY').add(1, 'd').format('YYYY-MM-DD');
+
+      // console.log('start: ', start);
+      // console.log('end: ', end);
+      const asistFound = await Asistente.aggregate(
+        [
+          { $match: { equipo, rut } },
+        ],
+      );
+
+      const asistencias = [];
+      let i = 0;
+      const iMax = asistFound.length;
+
+      for (; i < iMax; i += 1) {
+        const fec = moment(asistFound[i].fecha, 'YYYY-MM-DD').format('YYYY-MM-DD');
+          asistencias.push({ month: mon, count: countNio[i].count });
+      }
+
+      console.log(asistFound);
+
+      if (asistFound.length > 0) {
+        return res.status(200).json(asistFound);
+        // return res.status(200).json({ succesful: `Asistente Rut: ${rut}` });
+      }
+      return res.status(200).json({ succesful: 'Asistente no encontrado' });
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ error: 'Error al buscar asistente' });
+    }
+  },
+
+
+  /*
+
+  findBlackList: async (req, res) => {
+    try {
+      const { rut } = req.body;
+      // Check if there is a user with the same email
+      const foundRutBlack = await blackLista.findOne({ rut });
+      if (foundRutBlack) {
+        return res.status(200).json({ error: 'Rut encontrado en lista negra' });
+      }
+      return res.status(200).json({ error: 'Rut no encontrado en lista negra' });
+    } catch (error) {
+      return res.status(403).json({ error: 'Error al buscar asistente' });
+    }
+  },
+  */
 };

@@ -15,4 +15,7 @@ const middlewareAuth = require('../../middleware/auth');
 router.route('/asiscounts')
   .post(asistenteController.asisCounter);
 
+router.route('/getasis')
+  .post(asistenteController.getAsisByRutDate);
+
 module.exports = router;
