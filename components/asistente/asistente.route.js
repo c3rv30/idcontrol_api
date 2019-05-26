@@ -16,6 +16,6 @@ router.route('/asiscounts')
   .post(asistenteController.asisCounter);
 
 router.route('/getasis')
-  .post(asistenteController.getAsisByRutDate);
+  .post(middlewareAuth.ensureAuth, asistenteController.getAsisByRutDate);
 
 module.exports = router;

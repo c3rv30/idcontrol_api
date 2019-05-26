@@ -66,14 +66,14 @@ module.exports = {
         ],
       );
 
-      const asistencias = [];
+/*       const asistencias = [];
       let i = 0;
       const iMax = asistFound.length;
 
       for (; i < iMax; i += 1) {
         const fec = moment(asistFound[i].fecha, 'YYYY-MM-DD').format('YYYY-MM-DD');
           asistencias.push({ month: mon, count: countNio[i].count });
-      }
+      } */
 
       console.log(asistFound);
 

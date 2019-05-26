@@ -45,7 +45,7 @@ module.exports = {
     }
   },
 
-  signIn: async (req, res, next) => {
+  signIn: async (req, res) => {
     try {
       // console.log(req.user);
       // Generate token
@@ -68,8 +68,7 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      next();
-      return res.status(403).json({ error: 'Error signIn' });
+      return res.status(400).json({ error: { message: 'Username or password is incorrect' } });
     }
   },
 
