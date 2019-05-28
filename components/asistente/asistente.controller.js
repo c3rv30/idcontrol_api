@@ -92,24 +92,21 @@ module.exports = {
     }
   },
 
-
-
-  /** Total de asistentes mes actual */
-  getTotAsisMonth: async (req, res, next) => {
+  /** Total de asistentes mes actual
+   * FALTA CONDICION DE MES
+   */
+  getTotAsisMonth: async (req, res) => {
     try {
       const { equipo } = req.body;
-      // const startOfMonth = moment().startOf('month').format('YYYY/MM/DD');
-      // const endOfMonth = moment().endOf('month').format('YYYY/MM/DD');
       const actualMonth = moment().get('month');
-      const lastYear = moment().subtract(1, 'years').format('YYYY');
-      const fecha =  moment();
+      const fecha = moment().format('YYYY/MM/DD');
 
       console.log(fecha);
       console.log(actualMonth);
-      
-      /* const countMonth = await Asistente.aggregate(
+
+      const countMonth = await Asistente.aggregate(
         [
-          { $match: { equipo, fecha: { $gte: new Date(lastYear) } } },
+          { $match: { equipo, fecha: { $gte: new Date(fecha) } } },
           {
             $group: {
               _id: { equipo: '$equipo', month: { $month: '$fecha' }, year: { $year: '$fecha' } },
@@ -119,21 +116,66 @@ module.exports = {
           { $sort: { '_id.year': 1, '_id.month': 1 } },
         ],
       );
-      */
-      return res.status(200).json({ message: 'ok motherfucker nigga bitch!!!', actualMonth, lastYear });
-    } catch (error) {
-      return res.status(403).json({ error: 'Error al buscar asistente' });
-    }
 
+      return res.status(200).json(countMonth[0].count);
+    } catch (error) {
+      return res.status(403).json({ error: 'Error' });
+    }
   },
 
   /** Total de asistentes año actual */
+  getTotAsisCurrentYear: async (req, res) => {
+    try {
+      const { equipo } = req.body;
+      const currentYear = moment().format('YYYY');
+      let totAsist = 0;
+      const countYear = await Asistente.aggregate(
+        [
+          { $match: { equipo, fecha: { $gte: new Date(currentYear) } } },
+          {
+            $group: {
+              _id: { equipo: '$equipo' },
+              count: { $sum: 1 },
+            },
+          },
+        ],
+      );
+      if (countYear.length > 0) {
+        totAsist = countYear[0].count;
+      }
+      return res.status(200).json(totAsist);
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ error: 'Error' });
+    }
+  },
 
 
   /** Total de asistentes a la fecha */
-
-
-
+  getTotAsis: async (req, res) => {
+    try {
+      const { equipo } = req.body;
+      let totAsist = 0;
+      const countAllAsis = await Asistente.aggregate(
+        [
+          { $match: { equipo } },
+          {
+            $group: {
+              _id: { equipo: '$equipo' },
+              count: { $sum: 1 },
+            },
+          },
+        ],
+      );
+      if (countAllAsis.length > 0) {
+        totAsist = countAllAsis[0].count;
+      }
+      return res.status(200).json(totAsist);
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ error: 'Error' });
+    }
+  },
 
   /*
   findBlackList: async (req, res) => {
