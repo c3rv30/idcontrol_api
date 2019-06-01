@@ -12,6 +12,10 @@ router.route('/asiscounts')
 router.route('/getasis')
   .post(middlewareAuth.ensureAuth, asistenteController.getAsisByRutDate);
 
+// Get asistentes current month
+router.route('/getasismonth')
+  .post(middlewareAuth.ensureAuth, asistenteController.getTotAsisMonth);
+
 // Get all asistentes from current year
 router.route('/getasisyear')
   .post(middlewareAuth.ensureAuth, asistenteController.getTotAsisCurrentYear);
@@ -20,7 +24,7 @@ router.route('/getasisyear')
 router.route('/getallasis')
   .post(middlewareAuth.ensureAuth, asistenteController.getTotAsis);
 
-// Link de pruebas
+// Link de pruebas.......
 router.route('/pruebaFechas')
   .get(asistenteController.getTotAsis);
 

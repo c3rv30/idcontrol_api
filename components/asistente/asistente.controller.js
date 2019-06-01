@@ -98,26 +98,31 @@ module.exports = {
   getTotAsisMonth: async (req, res) => {
     try {
       const { equipo } = req.body;
-      const actualMonth = moment().get('month');
-      const fecha = moment().format('YYYY/MM/DD');
+      const startMonth = moment().startOf('month');
+      const endMonth = moment().endOf('month');
+      let totAsistMonth = 0;
+      // const fecha = moment().format('YYYY/MM/DD');
 
-      console.log(fecha);
-      console.log(actualMonth);
+      console.log(startMonth);
+      console.log(endMonth);
 
+      /* MONTH OPTIONAL */
       const countMonth = await Asistente.aggregate(
         [
-          { $match: { equipo, fecha: { $gte: new Date(fecha) } } },
+          { $match: { equipo, fecha: { $gte: new Date(startMonth), $lte: new Date(endMonth) } } },
           {
             $group: {
-              _id: { equipo: '$equipo', month: { $month: '$fecha' }, year: { $year: '$fecha' } },
+              _id: { equipo: '$equipo' },
               count: { $sum: 1 },
             },
           },
-          { $sort: { '_id.year': 1, '_id.month': 1 } },
         ],
       );
+      if (countMonth.length > 0) {
+        totAsistMonth = countMonth[0].count;
+      }
 
-      return res.status(200).json(countMonth[0].count);
+      return res.status(200).json(totAsistMonth);
     } catch (error) {
       return res.status(403).json({ error: 'Error' });
     }
