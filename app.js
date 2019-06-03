@@ -9,11 +9,14 @@ const errorHandler = require('errorhandler');
 const session = require('cookie-session'); // we're using 'express-session' as 'session' here
 const passport = require('passport');
 const mongoose = require('mongoose');
-
-// Initiate app
 const app = express();
+const Sentry = require('@sentry/node');
+
+Sentry.init({ dsn: 'https://4b44e2b659a948b4a154635a0ade68ab@sentry.io/1472923' });
 
 // Configure app
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.errorHandler());
 app.use(cors());
 app.use(helmet());
 app.use(logger('dev'));
