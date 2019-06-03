@@ -197,4 +197,16 @@ module.exports = {
     }
   },
   */
+
+
+
+  /** Total de asistentes a la fecha */
+  pruebaasis: async (req, res) => {
+    try {
+      return res.status(200).json('LAS PELOTAS!!!');
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ error: 'Error' });
+    }
+  },
 };

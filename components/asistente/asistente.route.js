@@ -26,6 +26,6 @@ router.route('/getallasis')
 
 // Link de pruebas.......
 router.route('/pruebaFechas')
-  .get(asistenteController.getTotAsis);
+  .get(asistenteController.pruebaasis);
 
 module.exports = router;
