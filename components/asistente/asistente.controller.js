@@ -56,31 +56,23 @@ module.exports = {
       asistencia a un solo partido seleccionando fecha como opción. */
   getAsisByRutDate: async (req, res) => {
     try {
-      // FALTA FECHA OPCIONAL
-      const { rut, equipo } = req.body;
-      const fec = '';
-      const start = moment(fec, 'DD/MM/YYYY').format('YYYY-MM-DD');
-      const end = moment(fec, 'DD/MM/YYYY').add(1, 'd').format('YYYY-MM-DD');
-
-      // console.log('start: ', start);
-      // console.log('end: ', end);
+      const query = {};
+      query.equipo = req.body.equipo;
+      query.rut = req.body.rut;
+      if (req.body.fecha) {
+        const startDay = moment(req.body.fecha, 'YYYY-MM-DD').startOf('day');
+        const endDay = moment(req.body.fecha, 'YYYY-MM-DD').add(1, 'd');
+        const fecha = { $gte: new Date(startDay), $lt: new Date(endDay) };
+        console.log(fecha);
+        query.fecha = fecha;
+      }
+      console.log('query: ', query);
       const asistFound = await Asistente.aggregate(
         [
-          { $match: { equipo, rut } },
+          { $match: query },
         ],
       );
-
-      /* const asistencias = [];
-      let i = 0;
-      const iMax = asistFound.length;
-
-      for (; i < iMax; i += 1) {
-        const fec = moment(asistFound[i].fecha, 'YYYY-MM-DD').format('YYYY-MM-DD');
-          asistencias.push({ month: mon, count: countNio[i].count });
-      } */
-
-      console.log(asistFound);
-
+      console.log('Found: ', asistFound);
       if (asistFound.length > 0) {
         return res.status(200).json(asistFound);
         // return res.status(200).json({ succesful: `Asistente Rut: ${rut}` });
@@ -93,7 +85,7 @@ module.exports = {
   },
 
   /** Total de asistentes mes actual
-   * FALTA CONDICION DE MES
+   * DASHBOARD CARD
    */
   getTotAsisMonth: async (req, res) => {
     try {
@@ -101,12 +93,6 @@ module.exports = {
       const startMonth = moment().startOf('month');
       const endMonth = moment().endOf('month');
       let totAsistMonth = 0;
-      // const fecha = moment().format('YYYY/MM/DD');
-
-      console.log(startMonth);
-      console.log(endMonth);
-
-      /* MONTH OPTIONAL */
       const countMonth = await Asistente.aggregate(
         [
           { $match: { equipo, fecha: { $gte: new Date(startMonth), $lte: new Date(endMonth) } } },
@@ -120,15 +106,17 @@ module.exports = {
       );
       if (countMonth.length > 0) {
         totAsistMonth = countMonth[0].count;
+        console.log(countMonth);
       }
-
       return res.status(200).json(totAsistMonth);
     } catch (error) {
       return res.status(403).json({ error: 'Error' });
     }
   },
 
-  /** Total de asistentes año actual */
+  /** Total de asistentes año actual
+   * * DASHBOARD CARD
+  */
   getTotAsisCurrentYear: async (req, res) => {
     try {
       const { equipo } = req.body;
@@ -156,7 +144,9 @@ module.exports = {
   },
 
 
-  /** Total de asistentes a la fecha */
+  /** Total de asistentes a la fecha
+   * * DASHBOARD CARD
+  */
   getTotAsis: async (req, res) => {
     try {
       const { equipo } = req.body;
