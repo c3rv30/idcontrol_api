@@ -57,8 +57,8 @@ module.exports = {
       query.equipo = req.body.equipo;
       query.rut = req.body.rut;
       if (req.body.fec) {
-        const startDay = moment(req.body.fec, 'YYYY-MM-DD').startOf('day');
-        const endDay = moment(req.body.fec, 'YYYY-MM-DD').add(1, 'd');
+        const startDay = moment(req.body.fec).startOf('day').format('YYYY-MM-DD');
+        const endDay = moment(req.body.fec).add(1, 'd').format('YYYY-MM-DD');
         const fecha = { $gte: new Date(startDay), $lt: new Date(endDay) };
         console.log(fecha);
         query.fecha = fecha;
