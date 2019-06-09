@@ -30,15 +30,12 @@ module.exports = {
           { $sort: { '_id.year': 1, '_id.month': 1 } },
         ],
       );
-
       const lastYearArray = [];
       const currentYearArray = [];
       let i = 0;
       const iMax = countNio.length;
-
       for (; i < iMax; i += 1) {
         const mon = moment().month(countNio[i]._id.month - 1).format('MMMM');
-
         if (countNio[i]._id.year === parseInt(lastYear, 10)) {
           lastYearArray.push({ month: mon, count: countNio[i].count });
         } else {
@@ -59,23 +56,20 @@ module.exports = {
       const query = {};
       query.equipo = req.body.equipo;
       query.rut = req.body.rut;
-      if (req.body.fecha) {
-        const startDay = moment(req.body.fecha, 'YYYY-MM-DD').startOf('day');
-        const endDay = moment(req.body.fecha, 'YYYY-MM-DD').add(1, 'd');
+      if (req.body.fec) {
+        const startDay = moment(req.body.fec, 'YYYY-MM-DD').startOf('day');
+        const endDay = moment(req.body.fec, 'YYYY-MM-DD').add(1, 'd');
         const fecha = { $gte: new Date(startDay), $lt: new Date(endDay) };
         console.log(fecha);
         query.fecha = fecha;
       }
       console.log('query: ', query);
-      const asistFound = await Asistente.aggregate(
-        [
-          { $match: query },
-        ],
-      );
+      const asistFound = await Asistente
+        .aggregate([{ $match: query }]);
       console.log('Found: ', asistFound);
       if (asistFound.length > 0) {
+        console.log('Ñioooooooooooooooooooo');
         return res.status(200).json(asistFound);
-        // return res.status(200).json({ succesful: `Asistente Rut: ${rut}` });
       }
       return res.status(200).json({ succesful: 'Asistente no encontrado' });
     } catch (error) {
@@ -172,12 +166,11 @@ module.exports = {
     }
   },
 
-  /*
+
   findBlackList: async (req, res) => {
     try {
       const { rut } = req.body;
-      // Check if there is a user with the same email
-      const foundRutBlack = await blackLista.findOne({ rut });
+      const foundRutBlack = 0;// await blackLista.findOne({ rut });
       if (foundRutBlack) {
         return res.status(200).json({ error: 'Rut encontrado en lista negra' });
       }
@@ -186,9 +179,6 @@ module.exports = {
       return res.status(403).json({ error: 'Error al buscar asistente' });
     }
   },
-  */
-
-
 
   /** Total de asistentes a la fecha */
   pruebaasis: async (req, res) => {
