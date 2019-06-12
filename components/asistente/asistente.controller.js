@@ -166,21 +166,28 @@ module.exports = {
     }
   },
 
-
-  findBlackList: async (req, res) => {
+  exportPartido: async (req, res) => {
     try {
-      const { rut } = req.body;
-      const foundRutBlack = 0;// await blackLista.findOne({ rut });
-      if (foundRutBlack) {
-        return res.status(200).json({ error: 'Rut encontrado en lista negra' });
+      const query = {};
+      query.equipo = req.body.equipo;
+      const startDay = moment(req.body.fec).startOf('day').format('YYYY-MM-DD');
+      const endDay = moment(req.body.fec).add(1, 'd').format('YYYY-MM-DD');
+      const fecha = { $gte: new Date(startDay), $lt: new Date(endDay) };
+      query.fecha = fecha;
+      const asistFound = await Asistente
+        .aggregate([{ $match: query }]);
+      console.log('Found: ', asistFound);
+      if (asistFound.length > 0) {
+        return res.status(200).json(asistFound);
       }
-      return res.status(200).json({ error: 'Rut no encontrado en lista negra' });
+      return res.status(200).json({ succesful: 'Asistente no encontrado' });
     } catch (error) {
+      console.log(error);
       return res.status(403).json({ error: 'Error al buscar asistente' });
     }
   },
 
-  /** Total de asistentes a la fecha */
+  /**  */
   pruebaasis: async (req, res) => {
     try {
       return res.status(200).json('LAS PELOTAS!!!');

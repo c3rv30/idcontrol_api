@@ -24,6 +24,11 @@ router.route('/getasisyear')
 router.route('/getallasis')
   .post(middlewareAuth.ensureAuth, asistenteController.getTotAsis);
 
+// Get total asistentes
+router.route('/export')
+  .post(middlewareAuth.ensureAuth, asistenteController.exportPartido);
+
+
 // Link de pruebas.......
 router.route('/pruebaFechas')
   .get(asistenteController.pruebaasis);

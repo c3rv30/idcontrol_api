@@ -9,6 +9,7 @@ const errorHandler = require('errorhandler');
 const session = require('cookie-session'); // we're using 'express-session' as 'session' here
 const passport = require('passport');
 const mongoose = require('mongoose');
+
 const app = express();
 const Sentry = require('@sentry/node');
 
