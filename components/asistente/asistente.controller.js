@@ -196,4 +196,14 @@ module.exports = {
       return res.status(403).json({ error: 'Error' });
     }
   },
+
+  /** TEST RETROFIT ANDROID */
+  retrofit: async (req, res) => {
+    try {
+      return res.status(200).send({ message: 'RESPUESTA PARA RETROFIT!!!!' });
+    } catch (error) {
+      console.log(error);
+      return res.status(403).json({ error: 'Error' });
+    }
+  },
 };

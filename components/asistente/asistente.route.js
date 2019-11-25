@@ -33,4 +33,8 @@ router.route('/export')
 router.route('/pruebaFechas')
   .get(asistenteController.pruebaasis);
 
+// Link de pruebas.......
+router.route('/testretrofit')
+  .get(asistenteController.retrofit);
+
 module.exports = router;

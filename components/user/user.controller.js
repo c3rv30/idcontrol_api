@@ -33,15 +33,21 @@ module.exports = {
         equipo,
       });
 
-      await newUser.save();
+      await newUser.save((err) => {
+        // eslint-disable-next-line no-undef
+        if (err) return handleError(err);
+        // saved!
+        console.log('GUARDADO HDP!!');
+        return true;
+      });
 
       // Generate the token
       // const token = await signJwt.signToken(newUser);
       // Respond with token
-      return res.status(200).json({ token: 'Registro Correcto' });
+      return res.status(200).json({ message: 'Registro Correcto' });
     } catch (error) {
       console.log(error);
-      return res.status(403).json({ error: 'Error signUp' });
+      return res.status(403).json({ error: 'Error al registrar' });
     }
   },
 
@@ -131,18 +137,18 @@ module.exports = {
     res.json({ secret: 'resource' });
   },
 
-  pruebas: async (req, res, next) => {
+  pruebas: async (req, res) => {
     try {
       // Check if there is a user with the same email
-      /*const foundUserEquipo = await User.findOne({ 'local.email': 'jperez@gmail.com' }).populate('equipo');
+      /* const foundUserEquipo = await User.findOne({ 'local.email': 'jperez@gmail.com' }).populate('equipo');
       if (foundUserEquipo) {
         console.log(foundUserEquipo);
         return res.status(200).json({ message: 'ñiooooo' });
       }
-      
+
       return next();
       */
-     return res.status(200).json('LAS PELOTAS');
+      return res.status(200).json('LAS PELOTAS');
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: 'El terrible error!!!' });
